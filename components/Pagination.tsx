@@ -1,7 +1,7 @@
 const Pagination = ({
   currentPage,
   total,
-  perPage = 10,
+  perPage = 11,
   onNavigation,
 }: PaginationProps) => {
   const current = (currentPage - 1) * perPage + 1;

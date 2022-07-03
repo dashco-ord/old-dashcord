@@ -14,16 +14,7 @@ const studentsRoute = async (req: NextApiRequest, res: NextApiResponse) => {
           id: session?.id,
         },
         include: {
-          Student: {
-            select: {
-              id: true,
-              name: true,
-              rollNo: true,
-              email: true,
-              gender: true,
-              department: true,
-            },
-          },
+          Student: true,
         },
       });
       if (!students) {

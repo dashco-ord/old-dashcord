@@ -6,10 +6,11 @@ import Table from "components/Table/Table";
 import Card from "components/cards/Card";
 import Toast, { ToastParams } from "components/Toast";
 import Link from "next/link";
+import readXlsxFile from "read-excel-file";
 
 const StudentsPage = () => {
   const [students, setStudents] = useState<Student[]>([]);
-
+  const [xlFile, setXlFile] = useState();
   const [toast, setToast] = useState<ToastParams>();
 
   const fetchStudents = async () => {
@@ -38,6 +39,14 @@ const StudentsPage = () => {
     }
   };
 
+  const handelXls = async (e) => {
+    e.preventDefault();
+    //@ts-ignore
+    readXlsxFile(xlFile).then((row) => {
+      console.log(row);
+    });
+  };
+
   return (
     <Layout>
       <div>
@@ -60,9 +69,9 @@ const StudentsPage = () => {
         title='All Students'
         headings={["name", "rollNo", "email", "gender", "department"]}>
         {students.map((student) => (
-          <tr key={student?.id}>
+          <tr key={student?.rollNo}>
             <td className='pl-5 p-2 whitespace-nowrap text-violet-700'>
-              <Link href={`/TG/students/${student?.id}`}>
+              <Link href={`/TG/students/${student?.rollNo}`}>
                 <a>{student?.name}</a>
               </Link>
             </td>
@@ -81,6 +90,20 @@ const StudentsPage = () => {
           </tr>
         ))}
       </Table>
+      <div className='mt-5'>
+        <form onSubmit={handelXls}>
+          <input
+            type='file'
+            onChange={(e) =>
+              setXlFile(
+                //@ts-ignore
+                e.target.files[0]
+              )
+            }
+          />
+          <input type='submit' />
+        </form>
+      </div>
     </Layout>
   );
 };

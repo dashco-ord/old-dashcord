@@ -1,24 +1,28 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Student } from "@prisma/client";
+import { Student, Tg } from "@prisma/client";
 import Table from "components/Table/Table";
 import Pagination from "components/Pagination";
 import Card from "components/cards/Card";
 import Toast, { ToastParams } from "components/Toast";
 import NumericFilterItem from "components/FilterItem/NumericFilterItem";
 import Link from "next/link";
-import HodLayout from "components/Layout/HodLayout";
+import StringFilterItem from "components/FilterItem/StringFilterItems";
+import Layout from "components/Layout/TgLayout";
 
 const StudentsPage = () => {
   const [students, setStudents] = useState<Student[]>([]);
   const [page, setPage] = useState(1);
   const [stats, setStats] = useState({
     total: 0,
-    totalMale: 0,
-    totalFemale: 0,
+    totalSecond: 0,
+    totalThird: 0,
+    totalForth: 0,
   });
   const [toast, setToast] = useState<ToastParams>();
   const [selectedYearFilter, setSelectedYearFilter] = useState(0);
+  const [selectedSectionFilter, setSelectedSectionFilter] = useState("all");
+  const [tgs, setTgs] = useState<Tg[]>()
 
   const fetchStudents = async ({ page } = { page: 1 }) => {
     const fetchStats = page == 1;
@@ -28,9 +32,11 @@ const StudentsPage = () => {
           page,
           stats: fetchStats,
           y: selectedYearFilter,
+          se: selectedSectionFilter,
         },
       });
       setPage(page);
+      setTgs(res.data.tgs)
       setStudents(res.data.students);
       if (fetchStats) {
         setStats(res.data.stats);
@@ -45,7 +51,7 @@ const StudentsPage = () => {
 
   useEffect(() => {
     fetchStudents();
-  }, [selectedYearFilter]);
+  }, [selectedYearFilter, selectedSectionFilter]);
 
   const handleNavigate = async (page: any) => {
     await fetchStudents({ page });
@@ -60,8 +66,9 @@ const StudentsPage = () => {
     }
   };
 
+
   return (
-    <HodLayout>
+    <Layout>
       <div>
         {toast && (
           <Toast
@@ -75,8 +82,9 @@ const StudentsPage = () => {
       </div>
       <div className='flex mb-10 overflow-x-scroll'>
         <Card title='All Students' value={stats.total} />
-        <Card title='All Male Students' value={stats.totalMale} />
-        <Card title='All Female Students' value={stats.totalFemale} />
+        <Card title='All 2nd year students' value={stats.totalSecond} />
+        <Card title='All 3rd year Students' value={stats.totalThird} />
+        <Card title='All 4th year Students' value={stats.totalForth} />
       </div>
 
       <div className='sm:flex sm:justify-between sm:items-center mb-10'>
@@ -109,7 +117,28 @@ const StudentsPage = () => {
             />
           </ul>
         </div>
-        <div className='ml-auto'></div>
+        <div className='ml-auto'>
+          <ul className='flex flex-wrap -m-1'>
+            <StringFilterItem
+              name={"All"}
+              label={"all"}
+              onSelect={setSelectedSectionFilter}
+              selected={selectedSectionFilter == "all"}
+            />
+            <StringFilterItem
+              name={"Sec A"}
+              label={"A"}
+              onSelect={setSelectedSectionFilter}
+              selected={selectedSectionFilter == "A"}
+            />
+            <StringFilterItem
+              name={"Sec B"}
+              label={"B"}
+              onSelect={setSelectedSectionFilter}
+              selected={selectedSectionFilter == "B"}
+            />
+          </ul>
+        </div>
       </div>
 
       <Table
@@ -122,11 +151,12 @@ const StudentsPage = () => {
           "department",
           "year",
           "section",
+          "TG",
         ]}>
         {students.map((student) => (
           <tr key={student.rollNo}>
             <td className='pl-5 p-2 whitespace-nowrap text-violet-400'>
-              <Link href={`/HOD/students/${student.rollNo}`}>
+              <Link href={`/INCHARGE/students/${student.rollNo}`}>
                 <a>{student.name}</a>
               </Link>
             </td>
@@ -144,6 +174,14 @@ const StudentsPage = () => {
             <td className='p-2 whitespace-nowrap'>{student.department}</td>
             <td className='p-2 whitespace-nowrap'>{student.year}</td>
             <td className='p-2 whitespace-nowrap'>{student.section}</td>
+            {
+              //@ts-ignore
+            student.Tg && 
+            <td className='p-2 whitespace-nowrap text-slate-500'>
+              <a className="text-indigo-300" href={`/INCHARGE/tgs/${student.tgId}`}>{
+              //@ts-ignore
+              student.Tg.name}</a>
+              </td>}
           </tr>
         ))}
       </Table>
@@ -152,7 +190,7 @@ const StudentsPage = () => {
         total={stats.total}
         onNavigation={handleNavigate}
       />
-    </HodLayout>
+    </Layout>
   );
 };
 

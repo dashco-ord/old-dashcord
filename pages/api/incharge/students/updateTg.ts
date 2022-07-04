@@ -6,7 +6,7 @@ const updateTg = async (req: NextApiRequest, res: NextApiResponse) => {
     const { id, newTgId } = await req.body;
     try {
       await prisma.student.update({
-        where: { id: id },
+        where: { rollNo: id },
         data: { tgId: newTgId },
       });
       res.status(200).end();

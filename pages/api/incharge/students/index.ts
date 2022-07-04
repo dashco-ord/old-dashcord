@@ -35,8 +35,11 @@ const StudentsRoute = async (req: NextApiRequest, res: NextApiResponse) => {
         take: perPage,
       });
 
+      const tgs = await prisma.tg.findMany()
+
       const resData = {
         students: students ?? [],
+        tgs:tgs??[],
         limit: perPage,
         stats: {},
       };

@@ -1,5 +1,5 @@
 import { Student, Tg } from "@prisma/client";
-import Layout from "components/Layout/TgLayout";
+import HodLayout from "components/Layout/HodLayout";
 import { prisma } from "lib/prisma";
 import Link from "next/link";
 
@@ -23,7 +23,7 @@ export const getServerSideProps = async (context: any) => {
 
 const SingleTgPage = ({ tg, students }: TgPageProps) => {
     return (
-        <Layout>
+        <HodLayout>
             <main>
                 <div className='flex flex-wrap bg-white rounded-lg p-8'>
                     <div className='flex flex-row-reverse'>
@@ -131,10 +131,10 @@ const SingleTgPage = ({ tg, students }: TgPageProps) => {
                     <span className="text-4xl font-bold mb-5 mr-4">{students.length} : </span>
                     </div>
                     <ul className="flex flex-row"> {students && students.map((student) => <li className="text-xl font-semibold mr-4 border border-black w-fit p-3 rounded-md">
-                        <Link href={`/INCHARGE/students/${student.rollNo}`}><a className="hover:text-purple-700">{student.name}</a></Link></li>)}</ul>
+                        <Link href={`/INCHARGE/students/${student.id}`}><a className="hover:text-purple-700">{student.name}</a></Link></li>)}</ul>
                 </div>
             </main>
-        </Layout>
+        </HodLayout>
     )
 }
 

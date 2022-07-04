@@ -84,7 +84,7 @@ export async function getServerSideProps(context: any) {
   const { params } = context;
   const rawStudent = await prisma.student.findUnique({
     where: {
-      id: params.slug,
+      rollNo: params.slug,
     },
     include: {
       familyDetails: true,

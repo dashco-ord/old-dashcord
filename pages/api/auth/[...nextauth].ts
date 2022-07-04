@@ -27,7 +27,7 @@ export default NextAuth({
         //@ts-ignore
         if (bcrypt.compare(credentials?.password, user?.passHash)) {
           return {
-            id: user?.id,
+            id: user?.rollNo,
             name: user?.name,
             email: user?.email,
             role: user?.role,

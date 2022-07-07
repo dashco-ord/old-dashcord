@@ -39,7 +39,7 @@ const StudentsPage = () => {
     }
   };
 
-  const handelXls = async (e) => {
+  const handelXls = async (e: any) => {
     e.preventDefault();
     //@ts-ignore
     readXlsxFile(xlFile).then((row) => {

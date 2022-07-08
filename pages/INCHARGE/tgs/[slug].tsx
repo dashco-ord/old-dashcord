@@ -25,13 +25,23 @@ export const getServerSideProps = async (context: any) => {
 
 const SingleTgPage = ({ tg, students }: TgPageProps) => {
   const [searchQuery, setSearchQuery] = useState("");
+  const selectedStudents: string[] = [];
+  const [results, setResults] = useState("");
+
+  const selectStudent = (rollNo: string) => {
+    selectedStudents.push(rollNo);
+  };
+
+  const handleStudents = async () => {
+    console.log(selectedStudents);
+  };
 
   const handleSearch = async () => {
     console.log(searchQuery);
   };
 
   useEffect(() => {
-    if (searchQuery.length >= 4) {
+    if (searchQuery.length >= 3) {
       handleSearch();
     }
   }, [searchQuery]);
@@ -139,7 +149,7 @@ const SingleTgPage = ({ tg, students }: TgPageProps) => {
             </div>
           </div>
         </div>
-        <div className='pl-8 pb-8 bg-white rounded-b-lg'>
+        <div className='px-8 pb-8 bg-white rounded-b-lg'>
           <div className='mb-5'>
             <form>
               <input
@@ -149,6 +159,9 @@ const SingleTgPage = ({ tg, students }: TgPageProps) => {
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </form>
+            {results && (
+              <div className='z-20 rounded w-fit min-w-[15rem] min-h-[4rem] border-2 border-slate-500'></div>
+            )}
           </div>
           <Table
             title='Allocated Students'
@@ -165,7 +178,10 @@ const SingleTgPage = ({ tg, students }: TgPageProps) => {
             {students.map((student) => (
               <tr key={student.rollNo}>
                 <td className='pl-2 p-2 whitespace-nowrap text-violet-400'>
-                  <input type='checkbox' />
+                  <input
+                    type='checkbox'
+                    onChange={() => selectStudent(student.rollNo)}
+                  />
                   <Link href={`/INCHARGE/students/${student.rollNo}`}>
                     <a className='pl-2'>{student.name}</a>
                   </Link>
@@ -184,6 +200,11 @@ const SingleTgPage = ({ tg, students }: TgPageProps) => {
               </tr>
             ))}
           </Table>
+          <button
+            className='mt-8 p-2 bg-red-500 rounded-md text-white font-semibold'
+            onClick={() => handleStudents()}>
+            Unallocate
+          </button>
         </div>
       </main>
     </Layout>

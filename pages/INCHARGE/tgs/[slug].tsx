@@ -3,6 +3,7 @@ import Layout from "components/Layout/TgLayout";
 import Table from "components/Table/Table";
 import { prisma } from "lib/prisma";
 import Link from "next/link";
+import { useState, useEffect } from "react";
 
 export const getServerSideProps = async (context: any) => {
   const { params } = context;
@@ -23,6 +24,18 @@ export const getServerSideProps = async (context: any) => {
 };
 
 const SingleTgPage = ({ tg, students }: TgPageProps) => {
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleSearch = async () => {
+    console.log(searchQuery);
+  };
+
+  useEffect(() => {
+    if (searchQuery.length >= 4) {
+      handleSearch();
+    }
+  }, [searchQuery]);
+
   return (
     <Layout>
       <main>
@@ -127,12 +140,13 @@ const SingleTgPage = ({ tg, students }: TgPageProps) => {
           </div>
         </div>
         <div className='pl-8 pb-8 bg-white rounded-b-lg'>
-          <div className='mb-10'>
+          <div className='mb-5'>
             <form>
               <input
-                className='border-slate-500 border p-1 px-2 rounded'
+                className='border-slate-500 border-2 p-1 px-2 rounded'
                 type='search'
                 placeholder='Search by Student name or Email'
+                onChange={(e) => setSearchQuery(e.target.value)}
               />
             </form>
           </div>

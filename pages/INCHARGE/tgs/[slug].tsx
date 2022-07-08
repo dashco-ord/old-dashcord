@@ -1,5 +1,6 @@
 import { Student, Tg } from "@prisma/client";
 import Layout from "components/Layout/TgLayout";
+import Table from "components/Table/Table";
 import { prisma } from "lib/prisma";
 import Link from "next/link";
 
@@ -135,25 +136,40 @@ const SingleTgPage = ({ tg, students }: TgPageProps) => {
               />
             </form>
           </div>
-          <div className='flex items-center'>
-            <h1 className='text-3xl font-bold mb-5 mr-4'>Allocated Students</h1>
-            <span className='text-3xl font-bold mb-5 mr-4'>
-              {students.length} :{" "}
-            </span>
-          </div>
-          <ul className='flex flex-row'>
-            {" "}
-            {students &&
-              students.map((student) => (
-                <li
-                  key={student.rollNo}
-                  className='text-xl font-semibold mr-4 border border-black w-fit p-3 rounded-md'>
+          <Table
+            title='Allocated Students'
+            headings={[
+              "name",
+              "rollNo",
+              "email",
+              "gender",
+              "department",
+              "year",
+              "section",
+            ]}
+            noShadow={true}>
+            {students.map((student) => (
+              <tr key={student.rollNo}>
+                <td className='pl-2 p-2 whitespace-nowrap text-violet-400'>
+                  <input type='checkbox' />
                   <Link href={`/INCHARGE/students/${student.rollNo}`}>
-                    <a className='hover:text-purple-700'>{student.name}</a>
+                    <a className='pl-2'>{student.name}</a>
                   </Link>
-                </li>
-              ))}
-          </ul>
+                </td>
+                <td className='p-2 whitespace-nowrap'>{student.rollNo}</td>
+                <td className='p-2 whitespace-nowrap text-indigo-300'>
+                  <a href={`mailto:${student.email}`}>{student.email}</a>
+                </td>
+                <td
+                  className={`mt-1.5 inline-flex font-medium rounded-full text-center px-2.5 py-0.5`}>
+                  {student.gender}
+                </td>
+                <td className='p-2 whitespace-nowrap'>{student.department}</td>
+                <td className='p-2 whitespace-nowrap'>{student.year}</td>
+                <td className='p-2 whitespace-nowrap'>{student.section}</td>
+              </tr>
+            ))}
+          </Table>
         </div>
       </main>
     </Layout>

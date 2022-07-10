@@ -5,6 +5,7 @@ import Table from "components/Table/Table";
 import { prisma } from "lib/prisma";
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
 
 export const getServerSideProps = async (context: any) => {
   const { params } = context;
@@ -25,8 +26,30 @@ export const getServerSideProps = async (context: any) => {
 };
 
 const SingleTgPage = ({ tg, students }: TgPageProps) => {
+  const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   const [results, setResults] = useState<Student[]>();
+
+  const assignStudent = async (rollNo: string) => {
+    const data = {
+      tgId: tg.id,
+      rollNo: rollNo,
+    };
+    await axios.post("/api/incharge/students/updateTg", data);
+  };
+
+  const unassigStudent = async (rollNo: string) => {
+    try {
+      const res = await axios.post("/api/incharge/students/unallocateTg", {
+        rollNo,
+      });
+      if (res.status == 200) {
+        router.reload();
+      }
+    } catch (error) {
+      //handle error
+    }
+  };
 
   const handleSearch = async () => {
     const res = await axios.post("/api/incharge/students/search", {
@@ -67,9 +90,26 @@ const SingleTgPage = ({ tg, students }: TgPageProps) => {
                     noShadow={true}>
                     {results.map((student) => (
                       <tr key={student.rollNo}>
-                        <td className='pl-2 p-2 whitespace-nowrap text-violet-400'>
+                        <td className='p-2 whitespace-nowrap text-violet-400 flex content-center'>
+                          <button
+                            className='pr-2 text-blue-700'
+                            onClick={() => assignStudent(student.rollNo)}>
+                            <svg
+                              xmlns='http://www.w3.org/2000/svg'
+                              className='h-4 w-4'
+                              fill='none'
+                              viewBox='0 0 24 24'
+                              stroke='currentColor'
+                              strokeWidth={2}>
+                              <path
+                                strokeLinecap='round'
+                                strokeLinejoin='round'
+                                d='M12 6v6m0 0v6m0-6h6m-6 0H6'
+                              />
+                            </svg>
+                          </button>
                           <Link href={`/INCHARGE/students/${student.rollNo}`}>
-                            <a className='pl-2'>{student.name}</a>
+                            <a>{student.name}</a>
                           </Link>
                         </td>
                         <td className='p-2 whitespace-nowrap'>
@@ -202,6 +242,23 @@ const SingleTgPage = ({ tg, students }: TgPageProps) => {
             {students.map((student) => (
               <tr key={student.rollNo}>
                 <td className='pl-2 p-2 whitespace-nowrap text-violet-400'>
+                  <button
+                    className='pr-2 text-red-700'
+                    onClick={() => unassigStudent(student.rollNo)}>
+                    <svg
+                      xmlns='http://www.w3.org/2000/svg'
+                      className='h-4 w-4'
+                      fill='none'
+                      viewBox='0 0 24 24'
+                      stroke='currentColor'
+                      strokeWidth={2}>
+                      <path
+                        strokeLinecap='round'
+                        strokeLinejoin='round'
+                        d='M20 12H4'
+                      />
+                    </svg>
+                  </button>
                   <Link href={`/INCHARGE/students/${student.rollNo}`}>
                     <a className='pl-2'>{student.name}</a>
                   </Link>
@@ -220,9 +277,6 @@ const SingleTgPage = ({ tg, students }: TgPageProps) => {
               </tr>
             ))}
           </Table>
-          <button className='mt-8 p-2 bg-red-500 rounded-md text-white font-semibold'>
-            Unallocate
-          </button>
         </div>
       </main>
     </Layout>

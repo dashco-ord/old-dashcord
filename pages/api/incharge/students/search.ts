@@ -8,9 +8,9 @@ const searchStudents = async (req: NextApiRequest, res: NextApiResponse) => {
       where: { name: { contains: searchQuery } },
     });
     res.json(students);
-    res.status(200);
+    res.status(200).end();
   }
-  res.status(405);
+  res.status(405).end();
 };
 
 export default searchStudents;

@@ -11,7 +11,7 @@ model Hod {
   id         String    @id @default(cuid())
   name       String
   email      String    @unique
-  passHash   String?
+  passHash   String
   gender     String
   address    String?
   portfolio  String
@@ -28,7 +28,7 @@ model TgIncharge {
   id         String    @id @default(cuid())
   name       String
   email      String    @unique
-  passHash   String?
+  passHash   String
   pictureUrl String
   role       UserRole?
   createdAt  DateTime  @default(now())
@@ -39,7 +39,7 @@ model Tg {
   id         String    @id @default(cuid())
   name       String
   email      String    @unique
-  passHash   String?
+  passHash   String
   phoneNo    String
   pictureUrl String
   gender     String
@@ -56,7 +56,7 @@ model Teacher {
   id         String    @id @default(cuid())
   name       String
   email      String    @unique
-  passHash   String?
+  passHash   String
   phoneNo    String
   pictureUrl String
   role       UserRole?
@@ -67,7 +67,7 @@ model Teacher {
 model FamilyDetails {
   id                String   @id @default(cuid())
   email             String?
-  passHash          String?
+  passHash          String
   fathersName       String?
   mothersName       String?
   fathersPhoneNo    String?

@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
+import { UserRole } from "@prisma/client";
 
 const Sidebar = () => {
   const router = useRouter();
@@ -81,11 +82,17 @@ const Sidebar = () => {
       <div
         className={`my-5
          ${
-           isActive(`/${session?.role}/tasks`)
+           isActive(`/${session?.role}/tasks`) ||
+           isActive(`/${session?.role}/create`)
              ? "bg-purple-500 rounded-md p-2 text-white"
              : ""
          }`}>
-        <Link href={`/${session?.role}/tasks`}>
+        <Link
+          href={
+            session?.role == UserRole.INCHARGE
+              ? `/${session?.role}/create`
+              : `/${session?.role}/task`
+          }>
           <a>
             <svg
               xmlns='http://www.w3.org/2000/svg'

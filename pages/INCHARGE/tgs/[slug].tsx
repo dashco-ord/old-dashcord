@@ -6,6 +6,7 @@ import { prisma } from "lib/prisma";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
+import { refresh } from "@cloudinary/url-gen/qualifiers/artisticFilter";
 
 export const getServerSideProps = async (context: any) => {
   const { params } = context;
@@ -238,7 +239,8 @@ const SingleTgPage = ({ tg, students }: TgPageProps) => {
               "year",
               "section",
             ]}
-            noShadow={true}>
+            noShadow={true}
+            refresh={() => router.reload()}>
             {students.map((student) => (
               <tr key={student.rollNo}>
                 <td className='pl-2 p-2 whitespace-nowrap text-violet-400'>

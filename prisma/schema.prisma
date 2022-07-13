@@ -41,7 +41,7 @@ model Tg {
   email      String    @unique
   passHash   String
   phoneNo    String
-  pictureUrl String
+  pictureUrl String?
   gender     String
   department String
   bio        String?

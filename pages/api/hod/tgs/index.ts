@@ -13,15 +13,16 @@ const TgsRoute = async (req: NextApiRequest, res: NextApiResponse) => {
   const perPage = limit > maxLimit ? maxLimit : limit;
   const offset = (page - 1) * perPage;
 
-  if (session?.role == UserRole.HOD||UserRole.INCHARGE) {
+  if (session?.role == UserRole.HOD || UserRole.INCHARGE) {
     const tgs = await prisma.tg.findMany({
       include: { Student: true },
       skip: offset,
       take: perPage,
     });
+    const total = await prisma.tg.count();
     const data = {
       tgs: tgs,
-      total: tgs.length,
+      total: total,
     };
     res.json(data);
     res.status(200).end();

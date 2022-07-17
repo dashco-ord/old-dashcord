@@ -83,65 +83,8 @@ const SingleTgPage = ({ tg, students }: TgPageProps) => {
       <main>
         <div className='flex flex-wrap bg-white rounded-lg p-8'>
           <div className='flex flex-row-reverse'>
-            {/* Search Bar */}
-            <div className='px-20'>
-              <h1 className='text-xl font-semibold pb-4'>Add new Students</h1>
-              <form>
-                <input
-                  className='border-slate-500 border-2 p-1 px-2 rounded'
-                  type='search'
-                  placeholder='Search by Student name or Email'
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-              </form>
-              {results && (
-                <div className='z-20 fixed bg-white rounded w-fit min-w-[15rem] min-h-[4rem] border-2 border-slate-500'>
-                  <Table
-                    title='Search Results'
-                    headings={["Name", "Roll No", "Year", "Section"]}
-                    noShadow={true}>
-                    {results.map((student) => (
-                      <tr key={student.rollNo}>
-                        <td className='p-2 whitespace-nowrap text-violet-400 flex content-center'>
-                          <button
-                            className='pr-2 text-blue-700'
-                            onClick={() => assignStudent(student.rollNo)}>
-                            <svg
-                              xmlns='http://www.w3.org/2000/svg'
-                              className='h-4 w-4'
-                              fill='none'
-                              viewBox='0 0 24 24'
-                              stroke='currentColor'
-                              strokeWidth={2}>
-                              <path
-                                strokeLinecap='round'
-                                strokeLinejoin='round'
-                                d='M12 6v6m0 0v6m0-6h6m-6 0H6'
-                              />
-                            </svg>
-                          </button>
-                          <Link href={`/INCHARGE/students/${student.rollNo}`}>
-                            <a>{student.name}</a>
-                          </Link>
-                        </td>
-                        <td className='p-2 whitespace-nowrap'>
-                          {student.rollNo}
-                        </td>
-                        <td className='p-2 whitespace-nowrap'>
-                          {student.year}
-                        </td>
-                        <td className='p-2 whitespace-nowrap'>
-                          {student.section}
-                        </td>
-                      </tr>
-                    ))}
-                  </Table>
-                </div>
-              )}
-            </div>
-
             <div>
-              <div className='flex w-80 h-80 bg-slate-200 rounded-md ml-40'>
+              <div className='flex w-80 h-80 bg-slate-200 rounded-md ml-60'>
                 <img
                   //@ts-ignore
                   src={tg?.pictureUrl}
@@ -238,7 +181,65 @@ const SingleTgPage = ({ tg, students }: TgPageProps) => {
             </div>
           </div>
         </div>
+
         <div className='px-8 pb-8 bg-white rounded-b-lg'>
+          {/*Search Bar*/}
+          <div className='mb-8'>
+            <h1 className='text-xl font-semibold pb-4'>Add new Students</h1>
+            <form>
+              <input
+                className='w-96  border-slate-500 border-2 p-1 px-2 rounded'
+                type='search'
+                placeholder='Search by Student name or Email'
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </form>
+            {results && (
+              <div className='z-20 fixed bg-white rounded w-fit min-w-[15rem] min-h-[4rem] border-2 border-slate-500'>
+                <Table
+                  title='Search Results'
+                  headings={["Name", "Roll No", "Year", "Section"]}
+                  noShadow={true}>
+                  {results.map((student) => (
+                    <tr key={student.rollNo}>
+                      <td className='p-2 whitespace-nowrap text-violet-400 flex content-center'>
+                        <button
+                          className='pr-2 text-blue-700'
+                          onClick={() => assignStudent(student.rollNo)}>
+                          <svg
+                            xmlns='http://www.w3.org/2000/svg'
+                            className='h-4 w-4'
+                            fill='none'
+                            viewBox='0 0 24 24'
+                            stroke='currentColor'
+                            strokeWidth={2}>
+                            <path
+                              strokeLinecap='round'
+                              strokeLinejoin='round'
+                              d='M12 6v6m0 0v6m0-6h6m-6 0H6'
+                            />
+                          </svg>
+                        </button>
+                        <Link href={`/INCHARGE/students/${student.rollNo}`}>
+                          <a>{student.name}</a>
+                        </Link>
+                      </td>
+                      <td className='p-2 whitespace-nowrap'>
+                        {student.rollNo}
+                      </td>
+                      <td className='p-2 whitespace-nowrap'>{student.year}</td>
+                      <td className='p-2 whitespace-nowrap'>
+                        {student.section}
+                      </td>
+                    </tr>
+                  ))}
+                </Table>
+              </div>
+            )}
+          </div>
+
+          {/*Table Section*/}
+
           <Table
             title='Allocated Students'
             headings={[

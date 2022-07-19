@@ -188,7 +188,7 @@ const SingleTgPage = ({ tg, students }: TgPageProps) => {
             <h1 className='text-xl font-semibold pb-4'>Add new Students</h1>
             <form>
               <input
-                className='w-96  border-slate-500 border-2 p-1 px-2 rounded'
+                className='w-[23.2rem]  border-slate-500 border-2 p-1 px-2 rounded'
                 type='search'
                 placeholder='Search by Student name or Email'
                 onChange={(e) => setSearchQuery(e.target.value)}

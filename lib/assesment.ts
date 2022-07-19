@@ -1,6 +1,6 @@
 export const AssesmentSchema = {
   "ROLL NO": {
-    prop: "rollNo",
+    prop: "studentId",
   },
   "STUDENT NAME": {
     prop: "name",

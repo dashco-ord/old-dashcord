@@ -7,6 +7,7 @@ import Card from "components/cards/Card";
 import Toast, { ToastParams } from "components/Toast";
 import Link from "next/link";
 import readXlsxFile from "read-excel-file";
+import { AssesmentSchema as schema } from "lib/assesment";
 
 const StudentsPage = () => {
   const [students, setStudents] = useState<Student[]>([]);
@@ -41,10 +42,31 @@ const StudentsPage = () => {
 
   const handelXls = async (e: any) => {
     e.preventDefault();
-    //@ts-ignore
-    readXlsxFile(xlFile).then((row) => {
-      console.log(row);
+    setToast({
+      type: "warning",
+      message: "The file is under processing please wait...",
     });
+
+    //@ts-ignore
+    const data = await readXlsxFile(xlFile, { schema }).then(({ rows }) => {
+      return rows;
+    });
+    try {
+      const res = await axios.post("/api/tg/students/updateAssesment", data);
+      if (res.status == 200) {
+        setToast({
+          type: "success",
+          message:
+            "File Has been processed please wait the for the page to reload",
+        });
+      }
+    } catch (error) {
+      setToast({
+        type: "error",
+        message:
+          "There was an error while processing the file please re-check it and try again",
+      });
+    }
   };
 
   return (
@@ -93,6 +115,7 @@ const StudentsPage = () => {
       <div className='mt-5'>
         <form onSubmit={handelXls}>
           <input
+            className='rounded-sm border p-1 border-gray-400'
             type='file'
             onChange={(e) =>
               setXlFile(
@@ -101,7 +124,16 @@ const StudentsPage = () => {
               )
             }
           />
-          <input type='submit' />
+          <input
+            className={`ml-7 rounded-sm p-1 px-2 text-lg font-semibold text-white ${
+              xlFile
+                ? "bg-blue-600 cursor-pointer"
+                : "bg-blue-200 cursor-not-allowed"
+            }`}
+            type='submit'
+            value='upload'
+            disabled={xlFile ? false : true}
+          />
         </form>
       </div>
     </Layout>

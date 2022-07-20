@@ -7,11 +7,15 @@ import Card from "components/cards/Card";
 import Toast, { ToastParams } from "components/Toast";
 import Link from "next/link";
 import readXlsxFile from "read-excel-file";
+import { AssesmentSchema as schema } from "lib/assesment";
 
 const StudentsPage = () => {
   const [students, setStudents] = useState<Student[]>([]);
   const [xlFile, setXlFile] = useState();
   const [toast, setToast] = useState<ToastParams>();
+  const [year, setYear] = useState(0);
+  const [sheetType, setsheetType] = useState("");
+  const [assesmentType, setAssesmentType] = useState("");
 
   const fetchStudents = async () => {
     try {
@@ -39,12 +43,74 @@ const StudentsPage = () => {
     }
   };
 
+  const handleAssesmnetSheet = async (data: object[]) => {
+    if (assesmentType != "") {
+      const res = await axios.post("/api/tg/students/updateAssesment", {
+        data,
+        assesmentType,
+        year,
+      });
+      if (res.status == 200) {
+        setToast({
+          type: "success",
+          message:
+            "File Has been processed please wait the for the page to reload",
+        });
+      }
+    } else {
+      setToast({
+        type: "error",
+        message: "Please select a assesment type",
+      });
+    }
+  };
+
+  const handleAttendanceSheet = async (data: object[]) => {
+    const res = await axios.post("/api/tg/students/updateAttendance", data);
+    if (res.status == 200) {
+      setToast({
+        type: "success",
+        message:
+          "File Has been processed please wait the for the page to reload",
+      });
+    }
+  };
+
   const handelXls = async (e: any) => {
     e.preventDefault();
-    //@ts-ignore
-    readXlsxFile(xlFile).then((row) => {
-      console.log(row);
+    setToast({
+      type: "warning",
+      message: "The file is under processing please wait...",
     });
+
+    //@ts-ignore
+    const data = await readXlsxFile(xlFile, { schema }).then(({ rows }) => {
+      return rows;
+    });
+    try {
+      switch (sheetType) {
+        case "assesment":
+          handleAssesmnetSheet(data);
+          break;
+
+        case "attendance":
+          handleAttendanceSheet(data);
+          break;
+
+        default:
+          setToast({
+            type: "error",
+            message: " Please select a sheet type",
+          });
+          break;
+      }
+    } catch (error) {
+      setToast({
+        type: "error",
+        message:
+          "There was an error while processing the file please re-check it and try again",
+      });
+    }
   };
 
   return (
@@ -90,9 +156,45 @@ const StudentsPage = () => {
           </tr>
         ))}
       </Table>
-      <div className='mt-5'>
+      <div className='mt-5 flex'>
+        <div className='flex list-none mr-3'>
+          <select
+            name='Year '
+            className='mr-2 rounded-sm border-b-2 border-b-gray-300 focus:outline-none focus:border-blue-500 transition ease-in-out delay-75 bg-slate-100 duration-75'
+            onChange={(e) => setYear(parseInt(e.target.value))}>
+            <option value={0}>select a year</option>
+            <option value={2}>2nd</option>
+            <option value={3}>3rd</option>
+            <option value={4}>4th</option>
+          </select>
+
+          <select
+            name='For '
+            className='mr-2 rounded-sm border-b-2 border-b-gray-300 focus:outline-none focus:border-blue-500 transition ease-in-out delay-75 bg-slate-100 duration-75'
+            onChange={(e) => setsheetType(e.target.value)}>
+            <option value='2'>Which sheet is this</option>
+            <option value='assesment'>Assesmnet</option>
+            <option value='Attendance'>Attendance</option>
+          </select>
+
+          {sheetType == "assesment" && (
+            <select
+              name='For '
+              className='mr-2 rounded-sm border-b-2 border-b-gray-300 focus:outline-none focus:border-blue-500 transition ease-in-out delay-75 bg-slate-100 duration-75'
+              onChange={(e) => setAssesmentType(e.target.value)}>
+              <option value='2'>Which Assesmnet</option>
+              <option value='TAE1'>TAE1</option>
+              <option value='TAE2'>TAE2</option>
+              <option value='TAE3'>TAE3</option>
+              <option value='TAE4'>TAE4</option>
+              <option value='CAE1'>CAE1</option>
+              <option value='CAE2'>CAE2</option>
+            </select>
+          )}
+        </div>
         <form onSubmit={handelXls}>
           <input
+            className='rounded-sm border p-1 border-gray-400'
             type='file'
             onChange={(e) =>
               setXlFile(
@@ -101,7 +203,16 @@ const StudentsPage = () => {
               )
             }
           />
-          <input type='submit' />
+          <input
+            className={`ml-7 rounded-sm p-1 px-2 text-lg font-semibold text-white ${
+              xlFile
+                ? "bg-blue-600 cursor-pointer"
+                : "bg-blue-200 cursor-not-allowed"
+            }`}
+            type='submit'
+            value='upload'
+            disabled={xlFile ? false : true}
+          />
         </form>
       </div>
     </Layout>

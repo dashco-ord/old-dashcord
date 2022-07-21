@@ -15,7 +15,6 @@ const getAttendenceRoute = async (
         select: {
           Student: {
             select: {
-              id: true,
               name: true,
               rollNo: true,
               Attendance: true,

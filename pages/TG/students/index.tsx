@@ -66,7 +66,10 @@ const StudentsPage = () => {
   };
 
   const handleAttendanceSheet = async (data: object[]) => {
-    const res = await axios.post("/api/tg/students/updateAttendance", data);
+    const res = await axios.post("/api/tg/students/updateAttendance", {
+      data,
+      year,
+    });
     if (res.status == 200) {
       setToast({
         type: "success",

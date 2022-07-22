@@ -23,23 +23,20 @@ export default NextAuth({
       },
       //@ts-ignore
       async authorize(credentials) {
-        try {
-          const user = await prisma.tg.findUnique({
-            where: { email: credentials?.email },
-          });
-          //@ts-ignore
-          if (bcrypt.compare(credentials?.password == user?.passHash)) {
-            return {
-              id: user?.id,
-              name: user?.name,
-              email: user?.email,
-              role: user?.role,
-            };
-          } else {
-            return null;
-          }
-        } catch (error) {
-          //Todo : Send an error to the frontend
+        const user = await prisma.tg.findUnique({
+          where: { email: credentials?.email },
+        });
+        //@ts-ignore
+        if (bcrypt.compareSync(credentials?.password, user?.passHash)) {
+          console.log("logged in");
+          return {
+            id: user?.id,
+            name: user?.name,
+            email: user?.email,
+            role: user?.role,
+          };
+        } else {
+          return null;
         }
       },
     }),

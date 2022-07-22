@@ -26,7 +26,7 @@ export default NextAuth({
         });
 
         //@ts-ignore
-        if (bcrypt.compare(credentials?.password, user?.passHash)) {
+        if (bcrypt.compareSync(credentials?.password, user?.passHash)) {
           return {
             id: user?.id,
             name: user?.name,

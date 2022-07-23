@@ -1,6 +1,6 @@
 import { prisma } from "../lib/prisma";
 import faker from "@faker-js/faker";
-import { teacherGuardians, hods, students } from "./data";
+import { teacherGuardians, hods, students, tgIncharge } from "./data";
 
 const main = async () => {
   try {
@@ -14,6 +14,9 @@ const main = async () => {
 
     console.log("Createing HOD's");
     await prisma.hod.createMany({ data: hods });
+
+    console.log("Createing Tg Incharge");
+    await prisma.tgIncharge.create({ data: tgIncharge });
 
     console.log("Createing TG's");
     await prisma.tg.createMany({ data: teacherGuardians });

@@ -1,12 +1,13 @@
 import { prisma } from "../lib/prisma";
 import faker from "@faker-js/faker";
-import { teacherGuardians, hods, students } from "./data";
+import { teacherGuardians, hods, students, tgIncharge } from "./data";
 
 const main = async () => {
   try {
     console.log("\n Deleting existing Data... \n");
     await prisma.tg.deleteMany();
     await prisma.hod.deleteMany();
+    await prisma.tgIncharge.deleteMany();
     await prisma.student.deleteMany();
     await prisma.familyDetails.deleteMany();
 
@@ -15,11 +16,17 @@ const main = async () => {
     console.log("Createing HOD's");
     await prisma.hod.createMany({ data: hods });
 
+    console.log("Createing Tg Incharge");
+    await prisma.tgIncharge.create({ data: tgIncharge });
+
     console.log("Createing TG's");
     await prisma.tg.createMany({ data: teacherGuardians });
 
     console.log("Createing students");
-    await prisma.student.createMany({ data: students });
+    students.map(async (student) => {
+      await prisma.student.create({ data: student });
+      await prisma.attendance.create({ data: { rollNo: student.rollNo } });
+    });
 
     console.log("Creating Family Details");
     for (let i = 0; i < students.length; i++) {

@@ -7,7 +7,7 @@ import Card from "components/cards/Card";
 import Toast, { ToastParams } from "components/Toast";
 import Link from "next/link";
 import readXlsxFile from "read-excel-file";
-import { AssesmentSchema as schema } from "lib/assesment";
+import { AssesmentSchema as schema } from "lib/xlSchema";
 
 const StudentsPage = () => {
   const [students, setStudents] = useState<Student[]>([]);
@@ -43,7 +43,11 @@ const StudentsPage = () => {
     }
   };
 
-  const handleAssesmnetSheet = async (data: object[]) => {
+  const handleAssesmnetSheet = async () => {
+    //@ts-ignore
+    const data = await readXlsxFile(xlFile, { schema }).then(({ rows }) => {
+      return rows;
+    });
     if (assesmentType != "") {
       const res = await axios.post("/api/tg/students/updateAssesment", {
         data,
@@ -65,7 +69,37 @@ const StudentsPage = () => {
     }
   };
 
-  const handleAttendanceSheet = async (data: object[]) => {
+  const handleAttendanceSheet = async () => {
+    const schema = {
+      "ROLL NO": {
+        prop: "rollNo",
+      },
+      "STUDENT NAME": {
+        prop: "name",
+      },
+      "LECTURE 1": {
+        prop: "lecture1",
+      },
+      "LECTURE 2": {
+        prop: "lecture2",
+      },
+      "LECTURE 3": {
+        prop: "lecture3",
+      },
+      "LECTURE 4": {
+        prop: "lecture4",
+      },
+      "LECTURE 5": {
+        prop: "lecture5",
+      },
+      "LECTURE 6": {
+        prop: "lecture6",
+      },
+    };
+    //@ts-ignore
+    const data = await readXlsxFile(xlFile, { schema }).then(({ rows }) => {
+      return rows;
+    });
     const res = await axios.post("/api/tg/students/updateAttendance", {
       data,
       year,
@@ -85,19 +119,14 @@ const StudentsPage = () => {
       type: "warning",
       message: "The file is under processing please wait...",
     });
-
-    //@ts-ignore
-    const data = await readXlsxFile(xlFile, { schema }).then(({ rows }) => {
-      return rows;
-    });
     try {
       switch (sheetType) {
         case "assesment":
-          handleAssesmnetSheet(data);
+          handleAssesmnetSheet();
           break;
 
         case "attendance":
-          handleAttendanceSheet(data);
+          handleAttendanceSheet();
           break;
 
         default:
@@ -177,7 +206,7 @@ const StudentsPage = () => {
             onChange={(e) => setsheetType(e.target.value)}>
             <option value='2'>Which sheet is this</option>
             <option value='assesment'>Assesmnet</option>
-            <option value='Attendance'>Attendance</option>
+            <option value='attendance'>Attendance</option>
           </select>
 
           {sheetType == "assesment" && (

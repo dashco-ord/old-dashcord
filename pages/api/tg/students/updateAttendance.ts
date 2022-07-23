@@ -11,9 +11,9 @@ const updateAttendance = async (req: NextApiRequest, res: NextApiResponse) => {
       const { data, year } = await req.body;
       data.map(async (attendance: any) => {
         try {
-          await prisma.attendance.create({
+          await prisma.attendance.update({
+            where: { rollNo: attendance.rollNo },
             data: {
-              rollNo: attendance.rollNo,
               lecture1:
                 attendance.lecture1 == "present"
                   ? AttendanceType.PRESENT

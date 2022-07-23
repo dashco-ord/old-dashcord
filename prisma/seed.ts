@@ -7,6 +7,7 @@ const main = async () => {
     console.log("\n Deleting existing Data... \n");
     await prisma.tg.deleteMany();
     await prisma.hod.deleteMany();
+    await prisma.tgIncharge.deleteMany();
     await prisma.student.deleteMany();
     await prisma.familyDetails.deleteMany();
 
@@ -22,7 +23,10 @@ const main = async () => {
     await prisma.tg.createMany({ data: teacherGuardians });
 
     console.log("Createing students");
-    await prisma.student.createMany({ data: students });
+    students.map(async (student) => {
+      await prisma.student.create({ data: student });
+      await prisma.attendance.create({ data: { rollNo: student.rollNo } });
+    });
 
     console.log("Creating Family Details");
     for (let i = 0; i < students.length; i++) {
